@@ -23,9 +23,9 @@ class SearchViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configureLayout()
     }
-    
+ 
     func configureLayout() {
         view.addSubview(tableView)
         navigationItem.titleView = searchBar

@@ -30,6 +30,10 @@
 		041280782AF1D14000972552 /* Resource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 041280772AF1D14000972552 /* Resource.swift */; };
 		DE75C7852BBBF71300677ADF /* SampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75C7842BBBF71300677ADF /* SampleViewController.swift */; };
 		DE75C7882BBC0C5300677ADF /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE75C7872BBC0C5300677ADF /* SearchViewController.swift */; };
+		DE9CEB612BBD7B1B00360192 /* ShoppingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9CEB602BBD7B1B00360192 /* ShoppingViewController.swift */; };
+		DE9CEB632BBD7B8800360192 /* ShoppingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9CEB622BBD7B8800360192 /* ShoppingTableViewCell.swift */; };
+		DE9CEB652BBD851200360192 /* ShoppingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9CEB642BBD851200360192 /* ShoppingViewModel.swift */; };
+		DE9CEB672BBD85FD00360192 /* TODO.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE9CEB662BBD85FD00360192 /* TODO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -74,6 +78,10 @@
 		041280772AF1D14000972552 /* Resource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resource.swift; sourceTree = "<group>"; };
 		DE75C7842BBBF71300677ADF /* SampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewController.swift; sourceTree = "<group>"; };
 		DE75C7872BBC0C5300677ADF /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		DE9CEB602BBD7B1B00360192 /* ShoppingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewController.swift; sourceTree = "<group>"; };
+		DE9CEB622BBD7B8800360192 /* ShoppingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingTableViewCell.swift; sourceTree = "<group>"; };
+		DE9CEB642BBD851200360192 /* ShoppingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingViewModel.swift; sourceTree = "<group>"; };
+		DE9CEB662BBD85FD00360192 /* TODO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TODO.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,6 +135,7 @@
 		041280222AEF9BAB00972552 /* SeSACRxThreads */ = {
 			isa = PBXGroup;
 			children = (
+				DE9CEB5F2BBD7AFE00360192 /* Shopping */,
 				DE75C7862BBC0C4A00677ADF /* Search */,
 				DE75C7832BBBF70100677ADF /* Sample */,
 				041280532AEF9C1F00972552 /* SignUp */,
@@ -212,6 +221,17 @@
 				DE75C7872BBC0C5300677ADF /* SearchViewController.swift */,
 			);
 			path = Search;
+			sourceTree = "<group>";
+		};
+		DE9CEB5F2BBD7AFE00360192 /* Shopping */ = {
+			isa = PBXGroup;
+			children = (
+				DE9CEB602BBD7B1B00360192 /* ShoppingViewController.swift */,
+				DE9CEB622BBD7B8800360192 /* ShoppingTableViewCell.swift */,
+				DE9CEB642BBD851200360192 /* ShoppingViewModel.swift */,
+				DE9CEB662BBD85FD00360192 /* TODO.swift */,
+			);
+			path = Shopping;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -353,9 +373,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE9CEB672BBD85FD00360192 /* TODO.swift in Sources */,
+				DE9CEB632BBD7B8800360192 /* ShoppingTableViewCell.swift in Sources */,
 				DE75C7882BBC0C5300677ADF /* SearchViewController.swift in Sources */,
 				041280782AF1D14000972552 /* Resource.swift in Sources */,
 				0412806F2AEFAD2D00972552 /* BirthdayViewController.swift in Sources */,
+				DE9CEB652BBD851200360192 /* ShoppingViewModel.swift in Sources */,
 				041280652AEFA2F000972552 /* SignTextField.swift in Sources */,
 				0412806C2AEFABFE00972552 /* PasswordViewController.swift in Sources */,
 				041280562AEFA04800972552 /* SignInViewController.swift in Sources */,
@@ -367,6 +390,7 @@
 				0412806A2AEFA91E00972552 /* SignUpViewController.swift in Sources */,
 				041280712AEFAD3D00972552 /* PhoneViewController.swift in Sources */,
 				041280262AEF9BAB00972552 /* SceneDelegate.swift in Sources */,
+				DE9CEB612BBD7B1B00360192 /* ShoppingViewController.swift in Sources */,
 				041280582AEFA05300972552 /* SignInViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
