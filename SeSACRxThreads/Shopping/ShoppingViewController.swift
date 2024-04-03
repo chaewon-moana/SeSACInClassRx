@@ -31,18 +31,49 @@ final class ShoppingViewController: UIViewController {
     private func bind() {
         viewModel.items
             .bind(to: tableView.rx.items(cellIdentifier: "ShoppingTableViewCell", cellType: ShoppingTableViewCell.self)) { (row, element, cell) in
-                let doneImage = element.checkBox ? UIImage(systemName: "checkmark.square") : UIImage(systemName: "checkmark.square.fill")
-                let starImage = element.star ? UIImage(systemName: "star") : UIImage(systemName: "star.fill")
+                let doneImage = element.checkBox ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
+                let starImage = element.star ? UIImage(systemName: "star.fill") : UIImage(systemName: "star")
                 
                 cell.checkBox.setImage(doneImage, for: .normal)
                 cell.starMark.setImage(starImage, for: .normal)
                 cell.todoLabel.text = element.todo
+                print(element)
+        
+                cell.checkBox.rx.tap
+                    .subscribe(with: self, onNext: { owner, _ in
+                        owner.viewModel.inputCheckToggleTap.accept(row)
+                    })
+                    .disposed(by: cell.disposeBag)
+                
+                cell.starMark.rx.tap
+                    .subscribe(with: self, onNext: { owner, _ in
+                        owner.viewModel.inputStarToggleTap.accept(row)
+                    })
+                    .disposed(by: cell.disposeBag)
+            }
+            .disposed(by: disposeBag)
+        
+        tableView.rx.itemSelected
+            .subscribe(with: self) { owner, indexPath in
+                let vc = ShoppingDetailViewController()
+                vc.todo = owner.viewModel.tableData[indexPath.item]
+                vc.index = indexPath.item
+                owner.present(vc, animated: true)
             }
             .disposed(by: disposeBag)
         
         searchTextField.rx.text.orEmpty
             .bind(to: viewModel.inputAddTodoText)
             .disposed(by: disposeBag)
+        
+        addButton.rx.tap
+            .bind(to: viewModel.inputAddData)
+            .disposed(by: disposeBag)
+        
+        viewModel.outputTextFieldValue
+            .bind(to: searchTextField.rx.text)
+            .disposed(by: disposeBag)
+            
     }
     
     private func configureView() {
@@ -76,6 +107,4 @@ final class ShoppingViewController: UIViewController {
         
         tableView.rowHeight = 80
     }
-    
-    
 }
