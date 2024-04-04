@@ -9,14 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-/*
- struct TODO {
-     let checkBox: Bool
-     let todo: String
-     let star: Bool
- }
- */
-
 final class ShoppingViewModel {
     let disposeBag = DisposeBag()
 
@@ -28,10 +20,18 @@ final class ShoppingViewModel {
     let inputAddData = PublishSubject<Void>()
     let inputCheckToggleTap = PublishRelay<Int>()
     let inputStarToggleTap = PublishRelay<Int>()
+    let inputTrigger = PublishSubject<Int>()
+    let inputDeleteTap = PublishSubject<Void>()
     
     let outputTextFieldValue = BehaviorRelay(value: "")
     
     init() {
+        inputTrigger
+            .subscribe(with: self) { owner, _ in
+                owner.items.onNext(owner.tableData)
+            }
+            .disposed(by: disposeBag)
+        
         inputAddTodoText
             .distinctUntilChanged()
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance)

@@ -15,8 +15,11 @@ final class ShoppingDetailViewModel {
     let inputDeleteButtonTap = PublishSubject<Int>()
     
     init() {
-        inputDeleteButtonTap.subscribe(with: self) { owner, index in
+        inputDeleteButtonTap
+            .subscribe(with: self) { owner, index in
             owner.tableData.remove(at: index)
+            print(owner.tableData)
+            print("지워졌나,,?")
         }
         .disposed(by: disposeBag)
     }

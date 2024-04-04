@@ -13,7 +13,7 @@ struct TODO {
     var star: Bool
 }
 
-class TableData {
+struct TableData {
     static var tableData = [
         TODO(checkBox: false, todo: "테에스트으1", star: false),
         TODO(checkBox: false, todo: "테에스트으2", star: false),

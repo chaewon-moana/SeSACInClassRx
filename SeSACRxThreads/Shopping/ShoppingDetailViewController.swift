@@ -26,6 +26,7 @@ final class ShoppingDetailViewController: UIViewController {
     
     var todo: TODO = TODO(checkBox: false, todo: "", star: false)
     var index = 0
+    var delegate: TableViewReload?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +40,7 @@ final class ShoppingDetailViewController: UIViewController {
             .subscribe(with: self, onNext: { owner, _ in
                 owner.viewModel.inputDeleteButtonTap.onNext(owner.index)
                 owner.dismiss(animated: true)
+                owner.delegate?.tableViewReloadData(index: owner.index)
             })
             .disposed(by: disposeBag)
     }

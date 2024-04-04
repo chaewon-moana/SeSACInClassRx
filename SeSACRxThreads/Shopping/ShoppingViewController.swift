@@ -10,8 +10,17 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ShoppingViewController: UIViewController {
+protocol TableViewReload {
+    func tableViewReloadData(index: Int)
+}
+
+final class ShoppingViewController: UIViewController, TableViewReload {
     
+    func tableViewReloadData(index: Int) {
+        viewModel.inputTrigger.onNext(index)
+        tableView.reloadData()
+        print("함수는 잘 동작중임")
+    }
     let tableView = UITableView()
     let searchTextField = UITextField()
     let addButton = UIButton()
@@ -37,7 +46,7 @@ final class ShoppingViewController: UIViewController {
                 cell.checkBox.setImage(doneImage, for: .normal)
                 cell.starMark.setImage(starImage, for: .normal)
                 cell.todoLabel.text = element.todo
-                print(element)
+                //print(element)
         
                 cell.checkBox.rx.tap
                     .subscribe(with: self, onNext: { owner, _ in
@@ -53,12 +62,23 @@ final class ShoppingViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
+        
+        
         tableView.rx.itemSelected
             .subscribe(with: self) { owner, indexPath in
                 let vc = ShoppingDetailViewController()
                 vc.todo = owner.viewModel.tableData[indexPath.item]
                 vc.index = indexPath.item
+                vc.delegate = self
                 owner.present(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+        tableView.rx.itemDeleted
+            .subscribe(with: self) { owner, indexPath in
+                var result = owner.viewModel.tableData
+                result.remove(at: indexPath.row)
+                owner.viewModel.items.onNext(result)
             }
             .disposed(by: disposeBag)
         
