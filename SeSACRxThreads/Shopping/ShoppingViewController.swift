@@ -17,10 +17,11 @@ protocol TableViewReload {
 final class ShoppingViewController: UIViewController, TableViewReload {
     
     func tableViewReloadData(index: Int) {
-        viewModel.inputTrigger.onNext(index)
+      //  viewModel.inputTrigger.onNext(index)
         tableView.reloadData()
         print("함수는 잘 동작중임")
     }
+    
     let tableView = UITableView()
     let searchTextField = UITextField()
     let addButton = UIButton()
@@ -38,6 +39,17 @@ final class ShoppingViewController: UIViewController, TableViewReload {
     }
     
     private func bind() {
+        let checkTap = PublishRelay<TODO>()
+        let starTap = PublishRelay<TODO>()
+        
+        let input = ShoppingViewModel.Input(searchFieldText: searchTextField.rx.text,
+                                            addButtonTap: addButton.rx.tap,
+                                            itemDeleted: tableView.rx.itemDeleted,
+                                            doneTap: checkTap,
+                                            starTap: starTap)
+        
+        let output = viewModel.transform(input: input)
+        
         viewModel.items
             .bind(to: tableView.rx.items(cellIdentifier: "ShoppingTableViewCell", cellType: ShoppingTableViewCell.self)) { (row, element, cell) in
                 let doneImage = element.checkBox ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "checkmark.square")
@@ -46,56 +58,33 @@ final class ShoppingViewController: UIViewController, TableViewReload {
                 cell.checkBox.setImage(doneImage, for: .normal)
                 cell.starMark.setImage(starImage, for: .normal)
                 cell.todoLabel.text = element.todo
-                //print(element)
         
                 cell.checkBox.rx.tap
-                    .subscribe(with: self, onNext: { owner, _ in
-                        owner.viewModel.inputCheckToggleTap.accept(row)
-                    })
+                    .map { element }
+                    .bind(to: checkTap)
                     .disposed(by: cell.disposeBag)
                 
                 cell.starMark.rx.tap
-                    .subscribe(with: self, onNext: { owner, _ in
-                        owner.viewModel.inputStarToggleTap.accept(row)
-                    })
+                    .map{ element }
+                    .bind(to: starTap)
                     .disposed(by: cell.disposeBag)
             }
             .disposed(by: disposeBag)
+
+        output.emptyTextField
+            .drive(searchTextField.rx.text)
+            .disposed(by: disposeBag)
         
-        
-        
-        tableView.rx.itemSelected
-            .subscribe(with: self) { owner, indexPath in
+        //itemSelected말고 modelSelected로 보낼 수 있을듯?
+        tableView.rx.modelSelected(TODO.self)
+            .subscribe(with: self) { owner, value in
                 let vc = ShoppingDetailViewController()
-                vc.todo = owner.viewModel.tableData[indexPath.item]
-                vc.index = indexPath.item
+                vc.todo = value
                 vc.delegate = self
                 owner.present(vc, animated: true)
             }
             .disposed(by: disposeBag)
-        
-        tableView.rx.itemDeleted
-            .subscribe(with: self) { owner, indexPath in
-                var result = owner.viewModel.tableData
-                result.remove(at: indexPath.row)
-                owner.viewModel.items.onNext(result)
-            }
-            .disposed(by: disposeBag)
-        
-        searchTextField.rx.text.orEmpty
-            .bind(to: viewModel.inputAddTodoText)
-            .disposed(by: disposeBag)
-        
-        addButton.rx.tap
-            .bind(to: viewModel.inputAddData)
-            .disposed(by: disposeBag)
-        
-        viewModel.outputTextFieldValue
-            .bind(to: searchTextField.rx.text)
-            .disposed(by: disposeBag)
-            
     }
-    
     private func configureView() {
         view.addSubview(tableView)
         view.addSubview(searchTextField)

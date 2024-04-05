@@ -230,12 +230,12 @@
 		DE9CEB5F2BBD7AFE00360192 /* Shopping */ = {
 			isa = PBXGroup;
 			children = (
-				DE9CEB602BBD7B1B00360192 /* ShoppingViewController.swift */,
-				DE9CEB622BBD7B8800360192 /* ShoppingTableViewCell.swift */,
-				DE9CEB642BBD851200360192 /* ShoppingViewModel.swift */,
 				DE9CEB662BBD85FD00360192 /* TODO.swift */,
+				DE9CEB602BBD7B1B00360192 /* ShoppingViewController.swift */,
+				DE9CEB642BBD851200360192 /* ShoppingViewModel.swift */,
 				DE9CEB682BBD940200360192 /* ShoppingDetailViewController.swift */,
 				DE9CEB6A2BBD989B00360192 /* ShoppingDetailViewModel.swift */,
+				DE9CEB622BBD7B8800360192 /* ShoppingTableViewCell.swift */,
 			);
 			path = Shopping;
 			sourceTree = "<group>";

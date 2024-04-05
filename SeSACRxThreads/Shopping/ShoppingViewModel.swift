@@ -10,61 +10,83 @@ import RxSwift
 import RxCocoa
 
 final class ShoppingViewModel {
+    
     let disposeBag = DisposeBag()
-
-    var tableData = TableData.tableData
-
-    lazy var items = BehaviorSubject(value: tableData)
-
-    let inputAddTodoText = PublishSubject<String>()
-    let inputAddData = PublishSubject<Void>()
-    let inputCheckToggleTap = PublishRelay<Int>()
-    let inputStarToggleTap = PublishRelay<Int>()
-    let inputTrigger = PublishSubject<Int>()
-    let inputDeleteTap = PublishSubject<Void>()
+    var dataManager = TableData.shared
     
-    let outputTextFieldValue = BehaviorRelay(value: "")
+    lazy var items = BehaviorSubject(value: dataManager.tableData)
+
+    struct Input {
+        let searchFieldText: ControlProperty<String?>
+        let addButtonTap: ControlEvent<Void>
+        let itemDeleted: ControlEvent<IndexPath>
+        let doneTap: PublishRelay<TODO>
+        let starTap: PublishRelay<TODO>
+    }
     
-    init() {
-        inputTrigger
-            .subscribe(with: self) { owner, _ in
-                owner.items.onNext(owner.tableData)
-            }
-            .disposed(by: disposeBag)
+    struct Output {
+        let emptyTextField: Driver<String>
+        let todo: PublishSubject<[TODO]>
+    }
+    
+    func transform(input: Input) -> Output {
+        let emptyText = BehaviorRelay(value: "")
+        let todo = PublishSubject<[TODO]>()
         
-        inputAddTodoText
+        input.searchFieldText
+            .orEmpty
             .distinctUntilChanged()
             .debounce(.milliseconds(500), scheduler: MainScheduler.instance)
             .subscribe(with: self) { owner, value in
-                let result = value.isEmpty ? owner.tableData : owner.tableData.filter { $0.todo.contains(value)}
+                let result = value.isEmpty ? owner.dataManager.tableData : owner.dataManager.tableData.filter { $0.todo.contains(value)}
                 owner.items.onNext(result)
             }
             .disposed(by: disposeBag)
         
-        inputAddData
-            .withLatestFrom(inputAddTodoText)
-            .distinctUntilChanged()
+        input.addButtonTap
+            .withLatestFrom(input.searchFieldText.orEmpty)
             .subscribe(with: self) { owner, value in
-                owner.tableData.append(TODO(checkBox: false, todo: value, star: false))
-                owner.items.onNext(owner.tableData)
-                owner.outputTextFieldValue.accept("")
+                let item = TODO(todo: value)
+                owner.dataManager.tableData.append(item)
+                print(TableData.shared.tableData)
+               // owner.tableData.append(item)
+                owner.items.onNext(owner.dataManager.tableData)
+                emptyText.accept("")
             }
             .disposed(by: disposeBag)
 
-        inputCheckToggleTap
-            .subscribe(with: self) { owner, index in
-                owner.tableData[index].checkBox.toggle()
-                owner.items.onNext(owner.tableData)
+        input.itemDeleted
+            .subscribe(with: self) { owner, indexPath in
+                owner.dataManager.tableData.remove(at: indexPath.row)
+                owner.items.onNext(owner.dataManager.tableData)
             }
             .disposed(by: disposeBag)
         
-        inputStarToggleTap
-            .subscribe(with: self) { owner, index in
-                owner.tableData[index].star.toggle()
-                owner.items.onNext(owner.tableData)
+        //TODO: 다른방법으로 처리할 수 없나?
+        input.doneTap
+            .subscribe(with: self, onNext: { owner, element in
+                let index = owner.dataManager.tableData.firstIndex { value in
+                    element.id == value.id
+                } ?? 0
+                owner.dataManager.tableData[index].checkBox.toggle()
+                owner.items.onNext(owner.dataManager.tableData)
+            })
+            .disposed(by: disposeBag)
+        
+        input.starTap
+            .subscribe(with: self) { owner, element in
+                let index = owner.dataManager.tableData.firstIndex { value in
+                    element.id == value.id
+                } ?? 0
+                owner.dataManager.tableData[index].star.toggle()
+                owner.items.onNext(owner.dataManager.tableData)
             }
             .disposed(by: disposeBag)
+
+        let result = emptyText
+            .asDriver()
+        
+        return Output(emptyTextField: result, todo: todo)
+        
     }
-    
-    
 }
