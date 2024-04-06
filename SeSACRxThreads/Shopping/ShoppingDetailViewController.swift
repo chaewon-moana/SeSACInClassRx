@@ -34,6 +34,7 @@ final class ShoppingDetailViewController: UIViewController {
     }
     
     private func bind() {
+        var updateItem = PublishRelay<(TODO, String, Bool, Bool)>()
         var editText = PublishRelay<String>()
         var item = PublishRelay<TODO>()
         var starSwitch = PublishRelay<Bool>()

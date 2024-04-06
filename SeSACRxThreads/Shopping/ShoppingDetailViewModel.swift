@@ -31,23 +31,30 @@ final class ShoppingDetailViewModel {
     }
     
     func transform(input: Input) -> Output {
-        var star: Bool = false
+        var star = false
         var done = false
         var text = ""
-        Observable.zip(input.doneSwtich.asObservable(), input.starSwitch.asObservable(), input.editText.asObservable())
-            .bind { value in
-                star = value.0
-                done = value.1
-                text = value.2
-                print(star, done, text)
-            }
-            .disposed(by: disposeBag)
+        
+        let result = Observable.combineLatest(input.doneSwtich.asObservable(), input.starSwitch.asObservable(), input.editText.asObservable()) { value1, value2, value3 in
+      
+        }
+        
+        input.starSwitch
+            .accept(star)
+        
+        input.doneSwtich
+            .accept(done)
+        
+        input.editText
+            .accept(text)
+
         
         input.editButtonTap
             .subscribe(with: self) { owner, value in
                 let index = owner.dataManager.tableData.firstIndex { item in
                     item.id == value.id
                 } ?? 0
+                print(star, done, text)
                 owner.dataManager.tableData[index].star = star
                 owner.dataManager.tableData[index].checkBox = done
                 owner.dataManager.tableData[index].todo = text
@@ -56,8 +63,6 @@ final class ShoppingDetailViewModel {
             }
             .disposed(by: disposeBag)
         
-       
-            
 
 //
 //        input.starSwitch
